@@ -1,10 +1,9 @@
+import streamlit as st
 from transformers import pipeline
 
-# Specify `use_fast=False` to avoid requiring Rust-based tokenizers
+# Set up pipelines with `use_fast=False` to bypass Rust-based tokenizers
 summarizer = pipeline("summarization", model="facebook/bart-large-cnn", use_fast=False)
 sentiment_analyzer = pipeline("sentiment-analysis", use_fast=False)
-
-import streamlit as st
 
 st.title("Text Summarizer and Sentiment Analysis")
 
@@ -20,3 +19,4 @@ if st.button("Summarize"):
 if st.button("Analyze Sentiment"):
     sentiment = sentiment_analyzer(text)
     st.write("Sentiment:", sentiment[0]['label'])
+
