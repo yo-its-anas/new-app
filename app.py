@@ -1,5 +1,12 @@
-from huggingface_hub import from_pretrained
+from huggingface_hub import snapshot_download
 import torch
+import streamlit as st
+
+# Download the model files to a local directory (e.g., 'model')
+model_dir = snapshot_download(repo_id="distilbert-base-uncased-finetuned-sst-2-english")
+
+# Load the model using torch (update to match your model loading code if needed)
+# You may need to change the model loading code depending on the exact model you're using
 
 import streamlit as st
 from transformers import pipeline
