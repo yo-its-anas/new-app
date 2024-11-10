@@ -1,3 +1,6 @@
+from huggingface_hub import from_pretrained
+import torch
+
 import streamlit as st
 from transformers import pipeline
 
