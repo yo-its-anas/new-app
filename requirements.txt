@@ -1,3 +1,5 @@
 streamlit
-transformers
-torch
+transformers==4.31.0  # Specifying a stable version
+torch==2.0.0          # Torch is required for transformers to run
+sentencepiece         # Required by some transformer models
+
