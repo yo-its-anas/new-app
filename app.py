@@ -1,61 +1,31 @@
-from huggingface_hub import snapshot_download
-import torch
-import streamlit as st
-
-# Download the model files to a local directory (e.g., 'model')
-model_dir = snapshot_download(repo_id="distilbert-base-uncased-finetuned-sst-2-english")
-
-# Load the model using torch (update to match your model loading code if needed)
-# You may need to change the model loading code depending on the exact model you're using
-
 import streamlit as st
 from transformers import pipeline
 
-# Initialize the pipelines for summarization and sentiment analysis
-summarizer = pipeline("summarization")
+# Initialize the text summarization and sentiment analysis pipelines
+summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
 sentiment_analyzer = pipeline("sentiment-analysis")
 
-# Set up the app layout
-st.set_page_config(page_title="Text Summarizer & Sentiment Analyzer", layout="centered")
-st.title("📄 Text Summarizer & Sentiment Analyzer")
-st.write("Analyze the sentiment and get a summary of any text you enter. Powered by Hugging Face's Transformers.")
+# Streamlit UI
+st.title("Text Summarizer and Sentiment Analysis App")
 
-# User input section
-st.subheader("Enter Your Text")
-user_input = st.text_area("Paste your text here", height=200, help="Enter the text you want to analyze.")
+# Text input for summarization
+input_text = st.text_area("Enter text to summarize:")
 
-# Check if text is provided
-if user_input:
-    # Sidebar options
-    st.sidebar.title("🔧 Options")
-    option = st.sidebar.radio("Choose Action:", ("Summarize Text", "Analyze Sentiment"))
+if st.button("Summarize"):
+    if input_text:
+        summary = summarizer(input_text, max_length=150, min_length=50, do_sample=False)
+        st.subheader("Summary:")
+        st.write(summary[0]['summary_text'])
+    else:
+        st.write("Please enter some text to summarize.")
 
-    # Show results based on selected action
-    if option == "Summarize Text":
-        st.subheader("🔍 Summary")
-        if st.button("Summarize"):
-            with st.spinner("Summarizing..."):
-                summary = summarizer(user_input, max_length=50, min_length=25, do_sample=False)
-                st.success("Summary generated successfully!")
-                st.write(summary[0]['summary_text'])
+# Text input for sentiment analysis
+input_text_sentiment = st.text_area("Enter text for sentiment analysis:")
 
-    elif option == "Analyze Sentiment":
-        st.subheader("📊 Sentiment Analysis")
-        if st.button("Analyze Sentiment"):
-            with st.spinner("Analyzing sentiment..."):
-                sentiment = sentiment_analyzer(user_input)
-                label = sentiment[0]['label']
-                score = sentiment[0]['score']
-                
-                # Display result with icon
-                if label == "POSITIVE":
-                    st.success(f"Sentiment: {label} (Confidence: {score:.2f})")
-                else:
-                    st.error(f"Sentiment: {label} (Confidence: {score:.2f})")
-
-else:
-    st.warning("Please enter some text to get started.")
-
-# Footer
-st.write("---")
-st.caption("Developed for Hackathon - Quick and Simple Text Analysis App")
+if st.button("Analyze Sentiment"):
+    if input_text_sentiment:
+        sentiment = sentiment_analyzer(input_text_sentiment)
+        st.subheader("Sentiment Analysis Result:")
+        st.write(f"Label: {sentiment[0]['label']}, Confidence: {sentiment[0]['score']}")
+    else:
+        st.write("Please enter some text for sentiment analysis.")
