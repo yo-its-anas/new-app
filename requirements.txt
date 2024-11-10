@@ -1,7 +1,4 @@
 streamlit
-transformers==4.30.2
+transformers==4.29.2  # A compatible version without Rust dependency
 torch
 sentencepiece
-
-
-
