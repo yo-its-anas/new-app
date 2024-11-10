@@ -1,6 +1,7 @@
 streamlit
-transformers==4.31.0
-torch  # Let pip choose a compatible version
+transformers==4.30.2
+torch
 sentencepiece
+
 
 
