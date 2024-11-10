@@ -1,28 +1,22 @@
-import streamlit as st
 from transformers import pipeline
 
-# Streamlit app UI
+# Specify `use_fast=False` to avoid requiring Rust-based tokenizers
+summarizer = pipeline("summarization", model="facebook/bart-large-cnn", use_fast=False)
+sentiment_analyzer = pipeline("sentiment-analysis", use_fast=False)
+
+import streamlit as st
+
 st.title("Text Summarizer and Sentiment Analysis")
 
-# Input text box
-input_text = st.text_area("Enter Text for Summarization and Sentiment Analysis")
+# Input box for text
+text = st.text_area("Enter text here:")
 
-# Load transformer models for summarization and sentiment analysis
-summarizer = pipeline("summarization")
-sentiment_analyzer = pipeline("sentiment-analysis")
+# Summarize text
+if st.button("Summarize"):
+    summary = summarizer(text, max_length=130, min_length=30, do_sample=False)
+    st.write("Summary:", summary[0]['summary_text'])
 
-# Button to process input text
-if st.button("Process Text"):
-    if input_text:
-        # Summarize the text
-        summary = summarizer(input_text, max_length=150, min_length=50, do_sample=False)
-        sentiment = sentiment_analyzer(input_text)
-
-        # Display results
-        st.subheader("Summary:")
-        st.write(summary[0]['summary_text'])
-        st.subheader("Sentiment Analysis:")
-        st.write(f"Label: {sentiment[0]['label']} (Confidence: {sentiment[0]['score']*100:.2f}%)")
-    else:
-        st.warning("Please enter some text to process.")
-
+# Sentiment analysis
+if st.button("Analyze Sentiment"):
+    sentiment = sentiment_analyzer(text)
+    st.write("Sentiment:", sentiment[0]['label'])
