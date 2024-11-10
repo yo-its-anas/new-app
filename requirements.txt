@@ -1,4 +1,3 @@
 streamlit==1.40.0
-transformers==4.18.0
-torch
-
+transformers==4.18.0  # Adjust if necessary
+torch  # Remove version number to allow Streamlit’s environment to auto-select
